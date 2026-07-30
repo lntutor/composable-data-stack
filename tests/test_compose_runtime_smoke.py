@@ -716,14 +716,9 @@ class ComposeRuntimeSmokeTest(unittest.TestCase):
                 r"(connection refused|connection to server.*failed|"
                 r"could not connect|operationalerror)",
             )
-            for key, secret in env.items():
-                if secret and any(
-                    marker in key.upper()
-                    for marker in ("PASSWORD", "SECRET", "TOKEN")
-                ):
-                    self.assertNotIn(secret, output)
+            self.assertEqual(self._redact(output, env), output)
         finally:
-            subprocess.run(
+            self._run(
                 [
                     "docker",
                     "compose",
@@ -732,10 +727,7 @@ class ComposeRuntimeSmokeTest(unittest.TestCase):
                     "start",
                     "postgres",
                 ],
-                cwd=self.repo_root,
                 env=env,
-                capture_output=True,
-                text=True,
                 timeout=300,
             )
 
