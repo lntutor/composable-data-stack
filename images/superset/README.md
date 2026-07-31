@@ -87,7 +87,7 @@ docker pull ronaldsoeverein/superset:6.1.0-20260730
 
 ### Health check
 
-Superset exposes a `/health` endpoint once the web process is up; use it as the HTTP health check path in Compose or any orchestrator.
+The image ships a built-in `HEALTHCHECK` that polls `http://localhost:8088/health` (10s interval, 180s start period, 20 retries) so `docker ps` reports container health even when run standalone. CDS-rendered Compose services override this with an equivalent, conditionally-enabled check.
 
 ## Examples
 
